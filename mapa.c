@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 #define MAP_MAX_LINHAS 20
 #define MAP_MAX_COLUNAS 40
 
@@ -64,6 +65,43 @@ Mapa *carregarMapa(const char *arquivo){
         return NULL;
     }
 
-
-
+    for (int i = 0; i < linhas; i++) {
+        m->celulas[i] = rows[i]; // copiar as linhas lidas para a matriz do mapa
+    }
+    return m;
 }
+
+// liberarMapa: liberar a memoria alocada para o mapa
+void liberarMapa(Mapa *mapa){
+    if (!mapa) return; // retorna se o mapa for NULL
+    if (mapa->celulas) {
+        for (int i = 0; i < mapa->linhas; i++) {
+            free(mapa->celulas[i]);
+        }
+        free(mapa->celulas);
+    } free(mapa);
+}
+
+// desenharMapa: Desenhar o mapa na tela usando ncurses e exibe HUD
+void desenharMapa(Mapa *m, Posicao pacman, Posicao blinky, int vidas, int pontuacao, int nivel) {
+    if (!m) return;
+
+    move(0, 0); // mover o cursor para o canto superior esquerdo
+    for (int i = 0; i < m->linhas; i++) {
+        for (int j = 0; j < m->colunas; j++) {
+            if (i == pacman.linha && j == pacman.coluna) {
+                addch(m->celulas[i][j] | COLOR_PAIR(1));
+            } else if (i == blinky.linha && j == blinky.coluna) {
+                addch(m->celulas[i][j] | COLOR_PAIR(2));
+            } else {
+                addch(m->celulas[i][j]);
+            }
+        }
+        addch('\n');
+    }
+
+    mvprintw(m->linhas + 1, 0, "VIDAS: %d  SCORE: %d  NIVEL: %d", vidas, pontuacao, nivel);
+    refresh();
+}
+
+// inicializarJogo: monta o nome mapa<N>.txt e chama carregarMapa
