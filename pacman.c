@@ -1,4 +1,5 @@
 #include <unistd.h> // lib para o delay => usleep()
+#include "game.h"
 #include <stdlib.h>
 #include <time.h>
 #include <ncurses.h>
@@ -39,6 +40,17 @@ char map[H][W] = {
 };
 
 int game_score = 0;
+hero pacman;
+ghost blinky;
+
+// Variáveis do menu
+int numFantasmas = 1;
+int nivelAtual = 1;
+float tempoDesdeInicio = 0.0f;
+int pelletsRemaining = 0;
+int jogoPausado = 0;
+int resetar = 0;
+
 
 // Struct do Pacman
 typedef struct _TAG_hero {
